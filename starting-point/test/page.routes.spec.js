@@ -116,12 +116,66 @@ describe('http requests', function () {
   });
 
   describe('GET /wiki/:urlTitle/similar', function () {
-    it('responds with 404 for page that does not exist');
-    it('responds with 200 for similar page');
+      beforeEach(function(done){
+        Page.sync({force: true})
+        .then(function (){
+            Page.create({
+                tags: ['cool', 'awesome', 'sam'],
+                title: "create a new title",
+                content: "this is a test"
+            }).then(function(){
+            Page.create({
+            title: "Title 2",
+            content: "Similar Content",
+            tags : ['awesome', 'pretty', 'good']
+            }).then(function(){
+            Page.create({
+            title: "Title 3",
+            content: "Different Content",
+            tags : ['rachel', 'sad', 'happy']
+        })
+        .then(function(){
+            Page.create({
+            title: "Title 4",
+            content: "Different Content",
+            tags : ['sam', 'great', 'fast']
+        })
+        }).then(function(){
+                done();
+            }).catch(done);
+        });
+        })
+    })
+    })
+    it('responds with 404 for page that does not exist',function(done){
+        agent
+        .get('/wiki/Title_5/similar')
+        .expect(404, done);
+    });
+        
+     it('responds with 200 for similar page', function(done){
+         agent
+         .get('/wiki/Title_2/similar')
+         .expect(200, done);
+     });
   });
 
   describe('POST /wiki', function () {
-    it('responds with 302');
+    it('responds with 302', function(done){
+        agent
+        .post('/wiki/')
+        .send({title: 'a new article',
+               content: 'this is a wonderful day',
+               email: 'yuyin@gmail.com',
+               author: 'Sarah Hann'
+            })
+            .then(function(page){
+            //     expect(page.title).to.equal('a new article');
+             console.log(page);
+                done();
+            })
+        });
+        
     it('creates a page in the database');
   });
 
