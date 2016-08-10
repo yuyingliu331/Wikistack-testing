@@ -82,7 +82,7 @@ router.get('/:urlTitle', function (req, res, next) {
         foundPage = page;
 
         if (foundPage === null) {
-            throw Error('That page was not found!');
+           return res.sendStatus(404);
         }
 
         return foundPage.getAuthor();
